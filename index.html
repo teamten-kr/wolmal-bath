@@ -399,8 +399,20 @@ const WAY={A:[[300,520],[230,540],[260,760],[270,300],[300,240],[220,410]],B:[[2
 const SHEEP0=`<path d="M10 22 Q10 8 23 8 Q36 8 36 22 Q33 15 23 15 Q13 15 10 22Z" fill="#f4e6c8"/><circle cx="11" cy="16" r="6" fill="#f4e6c8" stroke="#e2cfa7"/><circle cx="35" cy="16" r="6" fill="#f4e6c8" stroke="#e2cfa7"/><circle cx="11" cy="16" r="2.5" fill="#e2cfa7"/><circle cx="35" cy="16" r="2.5" fill="#e2cfa7"/>`;
 function npcPerson(top,shirt){if(top.includes('<rect x="12.5"')){const f=(top.match(/fill="(#[0-9a-fA-F]+)"/)||[])[1]||'#f4e6c8',st=(top.match(/stroke="(#[0-9a-fA-F]+)"/)||[])[1]||'#e2cfa7';top=SHEEP0.replace(/#f4e6c8/g,f).replace(/#e2cfa7/g,st)}
  return `<svg viewBox="0 0 46 62"><path d="M11 58 L13 34 Q23 28 33 34 L35 58Z" fill="${shirt}"/><circle cx="23" cy="24" r="12" fill="#f6d9bc"/>${top}<circle cx="19" cy="25" r="1.6" fill="#2a1f1a"/><circle cx="27" cy="25" r="1.6" fill="#2a1f1a"/><path d="M20 30 Q23 31.5 26 30" stroke="#c98d73" stroke-width="1.4" fill="none" stroke-linecap="round"/><circle cx="16" cy="29" r="2.2" fill="#f2a29a" opacity=".55"/><circle cx="30" cy="29" r="2.2" fill="#f2a29a" opacity=".55"/></svg>`}
+const __SRC=(()=>{try{const c=document.documentElement.cloneNode(true);['lobby','world'].forEach(id=>{const e=c.querySelector('#'+id);if(e)e.innerHTML=''});const m=c.querySelector('#edgeHtmlBtn');if(m)m.remove();return '<!DOCTYPE html>\n'+c.outerHTML}catch(e){return ''}})();
+(async()=>{try{if(!window.claude||!claude.use)return;const u=await claude.use('user');if(!u)return;let ok=false;try{ok=!!(await u.canEdit())}catch(e){}try{ok=ok||!!(await u.isOwner())}catch(e){}if(!ok||!__SRC)return;
+ const b=document.createElement('button');b.id='edgeHtmlBtn';b.textContent='💾';b.title='HTML 파일로 저장 (편집자만 보여요)';b.setAttribute('aria-label','HTML 복사');b.style.cssText='position:fixed;left:112px;bottom:12px;z-index:25;width:42px;height:42px;border-radius:50%;border:2px solid #1f5f8b;background:#fff;font-size:18px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.12)';document.body.appendChild(b);
+ b.onclick=e=>{e.stopPropagation();show(`<h2>💾 HTML 파일로 저장</h2><p class="sub">지금 페이지 전체 코드예요 (${Math.round(__SRC.length/1024)}KB). <b>복사하기</b>를 누른 뒤 메모장(또는 VS Code)에 붙여넣고 <b>index.html</b>로 저장하세요. 저장할 때 인코딩은 UTF-8로 골라주세요.</p><button class="btn full blue" id="cpHtml">📋 전체 복사하기</button><textarea id="srcBox" readonly style="width:100%;height:160px;margin-top:10px;font:11px/1.4 monospace;border:1px solid #cfe1ec;border-radius:10px;padding:8px;box-sizing:border-box"></textarea><p class="note" id="cpNote">복사 버튼이 안 되면 위 칸을 누른 뒤 전체 선택(Ctrl/⌘+A) → 복사(Ctrl/⌘+C) 해주세요.</p>`);
+  const ta=sheet.querySelector('#srcBox');ta.value=__SRC;ta.onfocus=()=>ta.select();
+  sheet.querySelector('#cpHtml').onclick=async()=>{let done=false;try{await navigator.clipboard.writeText(__SRC);done=true}catch(e){}if(!done){try{ta.focus();ta.select();done=document.execCommand('copy')}catch(e){}}sheet.querySelector('#cpNote').innerHTML=done?'✅ <b>복사했어요!</b> 메모장에 붙여넣고 index.html로 저장하세요.':'이 화면에서는 자동 복사가 막혀 있어요. 위 칸을 누르고 Ctrl/⌘+A → Ctrl/⌘+C 해주세요.'}}}catch(e){}})();
 document.head.insertAdjacentHTML('beforeend','<style>.who{position:absolute;left:50%;top:-14px;transform:translateX(-50%);font-size:10px;font-weight:700;line-height:1;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,.92);color:#6b7a86;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.18);z-index:2;pointer-events:none}.who.me{background:#ff8a3d;color:#fff}.npc .bubble{bottom:80px}</style>');
 setTimeout(()=>{const m=document.getElementById('me');if(m&&!m.querySelector('.who'))m.insertAdjacentHTML('afterbegin','<div class="who me">나</div>')},0);
+function monthJump(){const o=document.createElement('div');o.style.cssText='position:fixed;inset:0;z-index:95;background:#0d1620;opacity:0;transition:opacity .7s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#fff;font-family:"Gowun Dodum",sans-serif;pointer-events:all';
+ o.innerHTML=`<div style="font-size:40px">🌙</div><div style="font-family:'Black Han Sans';font-size:30px;letter-spacing:1px">한 달 뒤…</div><div style="font-size:14px;opacity:.75">${typeof S!=='undefined'&&S.month?S.month+'번째 월말이 돌아왔어요':'다시 월말이 돌아왔어요'}</div>`;
+ document.body.appendChild(o);requestAnimationFrame(()=>o.style.opacity=1);try{tone(523,523,.5,.06,'sine');tone(392,392,.7,.05,'sine',.35)}catch(e){}
+ setTimeout(()=>{try{if(typeof close==='function')close();if(typeof scene!=='undefined'&&scene!=='A'&&typeof goScene==='function'){goScene('A',260,780)}else if(typeof pos!=='undefined'){pos.x=260;pos.y=780;if(typeof target!=='undefined')target=null}if(typeof refresh==='function')refresh()}catch(e){}},900);
+ setTimeout(()=>{o.style.opacity=0;setTimeout(()=>o.remove(),800);try{ding(660,.5);toast('🛁 한 달 만에 오셨네요! 카운터에서 지난달 약속 성적표부터 받아보세요')}catch(e){}},2300)}
+document.addEventListener('click',e=>{if(e.target&&e.target.closest&&e.target.closest('#next'))setTimeout(monthJump,0)},true);
 NPCS.forEach(n=>{n.el=add(`<div class="npc"><div class="sh"></div>${n.staff?person(n.top,n.shirt):person(n.top.includes('<rect x="12.5"')?n.top:sheepTowel,n.shirt)}<div class="bubble"></div></div>`,n.sc);n.t=(n.way||WAY[n.sc])[0];n.wait=Math.random()*3;n.say=0;n.li=0});
 
 /* ---- zones ---- */
@@ -411,7 +423,7 @@ const Z=[
  {id:'dryer',sc:'A',name:'드라이기',x:420,y:228,px:420,py:46,hx:420,hy:94},
  {id:'scale',sc:'A',name:'체중계',x:86,y:400,px:86,py:252,hx:86,hy:291},
  {id:'doorIn',sc:'A',name:'욕탕 입구',x:410,y:350,px:465,py:232,hx:465,hy:316,door:true},
- {id:'shower',sc:'B',name:'샤워실',x:174,y:775,px:174,py:570,hx:174,hy:660},
+ {id:'shower',sc:'B',name:'샤워실',x:174,y:615,px:174,py:570,hx:174,hy:660},
  {id:'hot',sc:'B',name:'온탕',x:135,y:500,px:135,py:272,hx:135,hy:356},
  {id:'scrub',sc:'B',name:'세신실',x:396,y:250,px:396,py:40,hx:396,hy:119},
  {id:'cold',sc:'B',name:'냉탕',x:385,y:500,px:385,py:272,hx:385,hy:356},
@@ -496,11 +508,13 @@ function show(h){sheet.innerHTML='<button class="x" aria-label="닫기">×</butt
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.toggle('top',!!(typeof open==='function'&&open()));t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',3200)}
 /* ---- 소리 & 손맛 (Web Audio + 진동) ---- */
 let actx;const SFX={on:(()=>{try{return localStorage.getItem('bathSnd')!=='0'}catch(e){return true}})()};
+/* 전체 효과음 볼륨 (1 = 원래 크기) */
+const SFX_VOL=.75;function MST(c){if(!c.__m){c.__m=c.createGain();c.__m.gain.value=SFX_VOL;c.__m.connect(c.destination)}return c.__m}
 function ac(){actx=actx||new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();return actx}
 let noiseBuf=null;function noiseB(a){if(!noiseBuf){noiseBuf=a.createBuffer(1,a.sampleRate,a.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}return noiseBuf}
-function nz(dur,type,freq,q,vol,att=.01){if(!SFX.on)return;try{const a=ac(),s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain(),t=a.currentTime;s.buffer=noiseB(a);f.type=type;f.frequency.value=freq;f.Q.value=q;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+att);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.connect(f).connect(g).connect(a.destination);s.start(t,Math.random()*.4);s.stop(t+dur+.05)}catch(e){}}
-function tone(f1,f2,dur,vol=.15,type='sine',delay=0){if(!SFX.on)return;try{const a=ac(),o=a.createOscillator(),g=a.createGain(),t=a.currentTime+delay;o.type=type;o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g).connect(a.destination);o.start(t);o.stop(t+dur+.05)}catch(e){}}
-function sloop(type,freq,q,vol){if(!SFX.on)return null;try{const a=ac(),s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();s.buffer=noiseB(a);s.loop=true;f.type=type;f.frequency.value=freq;f.Q.value=q;g.gain.value=.0001;g.gain.setTargetAtTime(vol,a.currentTime,.05);s.connect(f).connect(g).connect(a.destination);s.start();
+function nz(dur,type,freq,q,vol,att=.01){if(!SFX.on)return;try{const a=ac(),s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain(),t=a.currentTime;s.buffer=noiseB(a);f.type=type;f.frequency.value=freq;f.Q.value=q;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+att);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.connect(f).connect(g).connect(MST(a));s.start(t,Math.random()*.4);s.stop(t+dur+.05)}catch(e){}}
+function tone(f1,f2,dur,vol=.15,type='sine',delay=0){if(!SFX.on)return;try{const a=ac(),o=a.createOscillator(),g=a.createGain(),t=a.currentTime+delay;o.type=type;o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g).connect(MST(a));o.start(t);o.stop(t+dur+.05)}catch(e){}}
+function sloop(type,freq,q,vol){if(!SFX.on)return null;try{const a=ac(),s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();s.buffer=noiseB(a);s.loop=true;f.type=type;f.frequency.value=freq;f.Q.value=q;g.gain.value=.0001;g.gain.setTargetAtTime(vol,a.currentTime,.05);s.connect(f).connect(g).connect(MST(a));s.start();
  return{stop(){try{g.gain.setTargetAtTime(.0001,a.currentTime,.06);s.stop(a.currentTime+.35)}catch(e){}}}}catch(e){return null}}
 const buzz=p=>{if(!SFX.on)return;try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
 /* 때 미는 소리: 드래그하는 동안 이어지는 마찰음 (속도 따라 크기·밝기 변화) */
@@ -508,7 +522,7 @@ let scrubL=null;
 function scrubStart(){if(!SFX.on||scrubL)return;try{const a=ac(),s=a.createBufferSource(),lo=a.createBiquadFilter(),hi=a.createBiquadFilter(),gh=a.createGain(),am=a.createGain(),lfo=a.createOscillator(),ld=a.createGain(),m=a.createGain();
  s.buffer=noiseB(a);s.loop=true;lo.type='bandpass';lo.frequency.value=600;lo.Q.value=.8;hi.type='bandpass';hi.frequency.value=2300;hi.Q.value=1.4;gh.gain.value=.3;
  am.gain.value=.6;lfo.type='triangle';lfo.frequency.value=28;ld.gain.value=.4;lfo.connect(ld).connect(am.gain);
- m.gain.value=.0001;s.connect(lo).connect(am);s.connect(hi).connect(gh).connect(am);am.connect(m).connect(a.destination);s.start();lfo.start();scrubL={a,s,lo,lfo,m}}catch(e){scrubL=null}}
+ m.gain.value=.0001;s.connect(lo).connect(am);s.connect(hi).connect(gh).connect(am);am.connect(m).connect(MST(a));s.start();lfo.start();scrubL={a,s,lo,lfo,m}}catch(e){scrubL=null}}
 function scrubMove(sp){if(!scrubL)return;const{a,lo,lfo,m}=scrubL,t=a.currentTime,v=Math.min(.14,.025+sp*.005);
  m.gain.cancelScheduledValues(t);m.gain.setTargetAtTime(v,t,.012);m.gain.setTargetAtTime(.0001,t+.08,.07);
  lo.frequency.setTargetAtTime(420+Math.min(800,sp*20),t,.03);lfo.frequency.setTargetAtTime(18+Math.min(30,sp*.8),t,.05)}
@@ -536,7 +550,7 @@ const sfx={
  notif(){tone(988,988,.12,.12,'sine');tone(1319,1319,.2,.12,'sine',.12);buzz([40,60,40])}
 };
 
-function ding(f=660,d=1.2){if(!SFX.on)return;try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=f;g.gain.setValueAtTime(.0001,actx.currentTime);g.gain.exponentialRampToValueAtTime(.2,actx.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+d);o.connect(g).connect(actx.destination);o.start();o.stop(actx.currentTime+d+.1)}catch(e){}}
+function ding(f=660,d=1.2){if(!SFX.on)return;try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=f;g.gain.setValueAtTime(.0001,actx.currentTime);g.gain.exponentialRampToValueAtTime(.2,actx.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+d);o.connect(g).connect(MST(actx));o.start();o.stop(actx.currentTime+d+.1)}catch(e){}}
 function openZone(id){target=null;try{fixS();({counter,hot,scrub,cold,snack,sauna,locker,dryer,scale,shower,doorIn,doorOut})[id]()}catch(err){console.error(err);delete me.dataset.busy;toast('앗, 화면을 여는 중 문제가 생겼어요. 다시 눌러주세요 ('+(err&&err.message||err)+')');return}const h2=sheet.querySelector('h2');if(FIN[id]&&h2&&!sheet.querySelector('.fin-tag'))h2.insertAdjacentHTML('afterend','<div class="fin-tag">'+FIN[id]+'</div>')}
 const need=(step,msg)=>{if(S.step<step){show(`<h2>잠깐만요!</h2><p class="sub">${msg}</p>`);return true}return false};
 
